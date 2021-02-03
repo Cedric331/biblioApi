@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\LivreRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\LivreRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=LivreRepository::class)
@@ -19,16 +20,19 @@ class Livre
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"genresList"})
      */
     private $isbn;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"genresList"})
      */
     private $titre;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"genresList"})
      */
     private $prix;
 
@@ -41,24 +45,22 @@ class Livre
     /**
      * @ORM\ManyToOne(targetEntity=Editeur::class, inversedBy="livres")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"genresList"})
      */
     private $editeur;
 
     /**
      * @ORM\ManyToOne(targetEntity=Auteur::class, inversedBy="livres")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"genresList"})
      */
     private $auteur;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"genresList"})
      */
     private $annee;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $langue;
 
     public function getId(): ?int
     {
@@ -145,18 +147,6 @@ class Livre
     public function setAnnee(int $annee): self
     {
         $this->annee = $annee;
-
-        return $this;
-    }
-
-    public function getLangue(): ?string
-    {
-        return $this->langue;
-    }
-
-    public function setLangue(string $langue): self
-    {
-        $this->langue = $langue;
 
         return $this;
     }
