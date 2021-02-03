@@ -26,13 +26,13 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('BiblioApi');
+            ->setTitle('API');
     }
 
     public function configureMenuItems(): iterable
     {
       return [
-         MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
+         MenuItem::linkToDashboard('Dashboard', 'fa fa-home', Auteur::class),
 
          MenuItem::section('Livres'),
          MenuItem::linkToCrud('Auteurs', 'fa fa-tags', Auteur::class),
