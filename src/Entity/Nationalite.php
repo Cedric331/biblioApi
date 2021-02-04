@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=NationaliteRepository::class)
-* @ApiResource()
+ * @ApiResource()
  */
 class Nationalite
 {
