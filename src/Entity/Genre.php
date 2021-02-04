@@ -6,17 +6,20 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\GenreRepository;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
+ 
 /**
  * @ORM\Entity(repositoryClass=GenreRepository::class)
  * @UniqueEntity(
  * fields="libelle",
  * message="Le libellé {{ value }} existe déjà")
- * @ApiResource()
+ * @ApiResource(
+ * itemOperations={"get"},
+ * collectionOperations={"get"})
  */
 class Genre
 {
@@ -42,6 +45,7 @@ class Genre
 
     /**
      * @ORM\OneToMany(targetEntity=Livre::class, mappedBy="genre")
+     * @ApiSubresource
      */
     private $livres;
 
