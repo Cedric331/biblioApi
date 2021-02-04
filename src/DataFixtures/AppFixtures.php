@@ -2,8 +2,10 @@
 
 namespace App\DataFixtures;
 
+use DateTime;
 use Faker\Factory;
 use App\Entity\Pret;
+use App\Entity\Livre;
 use App\Entity\Adherent;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,7 +53,6 @@ class AppFixtures extends Fixture
                   ->setPassword($adherent->getNom())
                   ->setPhone($this->faker->phoneNumber())
                   ->setCodeCommune($commune[mt_rand(0, count($commune)-1)]);
-         $this->addReference("adherent".$i, $adherent);
          $this->entity->persist($adherent);
        };
 
@@ -73,9 +74,20 @@ class AppFixtures extends Fixture
      */
     public function loadPret()
     {
+      for ($i=0; $i < 25; $i++) { 
          $pret = new Pret();
-
+         $pret->setDatePret($this->faker->dateTimeBetween('-3 months', 'now'));
+            $timestamp = date('Y-m-d H:m:s', strtotime("15 days",$pret->getDatePret()->getTimestamp()));
+            $date = DateTime::createFromFormat('Y-m-d H:i:s', $timestamp);
+            if(rand(1,3) == 1){
+               $pret->setDateRetour($this->faker->dateTimeInInterval($pret->getDatePret(), '+30 days'));
+            };
+            $pret->setDateRetourPrevue($date)
+                  ->setLivre($this->entity->getRepository(Livre::class)->find(rand(1,49)))
+                  ->setAdherent($this->entity->getRepository(Adherent::class)->find(rand(1,25)));
          $this->entity->persist($pret);
+       };
+
          $this->entity->flush();
     }
 }
