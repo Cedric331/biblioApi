@@ -4,20 +4,41 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\LivreRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
-use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity(repositoryClass=LivreRepository::class)
-* @ApiResource()
+ * @ApiResource(
+ *    attributes={
+ *       "order"={
+ *          "titre":"ASC",
+ *          "prix":"DESC"
+ *           }
+ *       }
+ *   )
+ * @ApiFilter(
+ *    SearchFilter::class,
+ *    properties={
+ *       "titre":"ipartial",
+ *       "auteur":"exact"
+ *    }
+ * )
+ *  @ApiFilter(
+ *    RangeFilter::class,
+ *    properties={
+ *       "prix"
+ *    }
+ * )
  */
 class Livre
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+     * @ORM\Column(type="integer")     */
     private $id;
 
     /**
