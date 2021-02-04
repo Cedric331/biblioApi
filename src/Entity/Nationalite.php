@@ -17,12 +17,12 @@ class Nationalite
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"auteursList"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"genresList"})
      * @Groups({"auteursList"})
      */
     private $libelle;

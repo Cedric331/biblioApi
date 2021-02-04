@@ -20,19 +20,16 @@ class Livre
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"genresList"})
      */
     private $isbn;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"genresList"})
      */
     private $titre;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"genresList"})
      */
     private $prix;
 
@@ -45,20 +42,17 @@ class Livre
     /**
      * @ORM\ManyToOne(targetEntity=Editeur::class, inversedBy="livres")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"genresList"})
      */
     private $editeur;
 
     /**
      * @ORM\ManyToOne(targetEntity=Auteur::class, inversedBy="livres")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"genresList"})
      */
     private $auteur;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"genresList"})
      */
     private $annee;
 

@@ -17,19 +17,18 @@ class Auteur
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"auteursList"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"genresList"})
      * @Groups({"auteursList"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"genresList"})
      * @Groups({"auteursList"})
      */
     private $prenom;
@@ -37,7 +36,6 @@ class Auteur
     /**
      * @ORM\ManyToOne(targetEntity=Nationalite::class, inversedBy="auteurs")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"genresList"})
      * @Groups({"auteursList"})
      */
     private $nationalite;

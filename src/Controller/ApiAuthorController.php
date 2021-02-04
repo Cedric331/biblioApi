@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Auteur;
+use App\Entity\Nationalite;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 class ApiAuthorController extends AbstractController
 {
@@ -73,7 +75,12 @@ class ApiAuthorController extends AbstractController
     public function update(ValidatorInterface $validator, Request $request, SerializerInterface $serializer, Auteur $auteur): Response
     {
       $data = $request->getContent();
-      $auteur = $serializer->deserialize($data, Auteur::class, 'json', ['object_to_populate' => $auteur]);
+      $data = $serializer->decode($data, 'json');
+
+      $nationalite = $this->entity->getRepository(Nationalite::class)->find($data['nationalite']['id']);
+      
+      $auteur = $serializer->deserialize($data['auteur'], Auteur::class, 'json', ['object_to_populate' => $auteur]);
+      $auteur->setNationalite($nationalite);
       $errors = $validator->validate($auteur);
 
       if (count($errors) > 0) {
