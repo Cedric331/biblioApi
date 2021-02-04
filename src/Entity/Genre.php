@@ -7,9 +7,14 @@ use App\Repository\GenreRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=GenreRepository::class)
+ * @UniqueEntity(
+ * fields="libelle",
+ * message="Le libellé {{ value }} existe déjà")
  */
 class Genre
 {
@@ -23,6 +28,13 @@ class Genre
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"genresList"})
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 50,
+     *      minMessage = "Le nom doit contenir plus de {{ limit }} caractères",
+     *      maxMessage = "Le nom doit contenir moins de {{ limit }} caractères"
+     * )
      */
     private $libelle;
 
