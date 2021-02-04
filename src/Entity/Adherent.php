@@ -7,12 +7,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AdherentRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=AdherentRepository::class)
  * @ApiResource()
- */
-class Adherent
+ */ 
+class Adherent implements UserInterface
 {
     /**
      * @ORM\Id
@@ -42,7 +43,7 @@ class Adherent
     private $codeCommune;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
 
@@ -60,6 +61,61 @@ class Adherent
      * @ORM\OneToMany(targetEntity=Pret::class, mappedBy="adherent")
      */
     private $prets;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+    
+      /**
+     * Alternatively, the roles might be stored on a ``roles`` property,
+     * and populated in any number of different ways when the user object
+     * is created.
+     *
+     * @return string[] The user roles
+     */
+    public function getRoles(){
+      $roles = $this->roles;
+      // guarantee every user at least has ROLE_USER
+      $roles[] = 'ROLE_USER';
+
+      return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = ['ROLE_USER'];
+
+        return $this;
+    }
+
+
+    /**
+     * Returns the salt that was originally used to encode the password.
+     *
+     * This can return null if the password was not encoded using a salt.
+     *
+     * @return string|null The salt
+     */
+    public function getSalt(){}
+
+    /**
+     * Returns the username used to authenticate the user.
+     *
+     * @return string The username
+     */
+    public function getUsername(){
+       return $this->getEmail();
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     */
+    public function eraseCredentials(){}
+
 
     public function __construct()
     {

@@ -10,21 +10,34 @@ use App\Entity\Adherent;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
    protected $entity;
    protected $faker;
+   protected $encoder;
 
-   public function __construct(EntityManagerInterface $entity)
+   public function __construct(UserPasswordEncoderInterface $encoder, EntityManagerInterface $entity)
    {
       $this->entity = $entity;
+      $this->encoder = $encoder;
       $this->faker = Factory::create("fr_FR");
    }
 
     public function load(ObjectManager $manager)
     {
+         $this->loadAdherent();
+         $this->loadPret();
+    }
 
+    /**
+     * Génération des adhérents
+     *
+     * @return void
+     */
+    public function loadAdherent()
+    {
        $genre = ['male', 'female'];
        $commune = [
          "78003", "78005", "78006", "78007", "78009", "78010", "78013", "78015", "78020", "78029",
@@ -37,8 +50,8 @@ class AppFixtures extends Fixture
          $adherent->setNom($this->faker->lastName())
                   ->setPrenom($this->faker->firstName($genre[mt_rand(0,1)]))
                   ->setAdresse($this->faker->streetAddress())
-                  ->setEmail(strtolower($adherent->getNom()).'@gmail.com')
-                  ->setPassword($adherent->getNom())
+                  ->setEmail(strtolower($adherent->getNom()).$i.'@gmail.com')
+                  ->setPassword($this->encoder->encodePassword($adherent, $adherent->getNom()))
                   ->setPhone($this->faker->phoneNumber())
                   ->setCodeCommune($commune[mt_rand(0, count($commune)-1)]);
          $this->entity->persist($adherent);
@@ -48,12 +61,20 @@ class AppFixtures extends Fixture
                   ->setPrenom("Cedric")
                   ->setAdresse("rue lilas")
                   ->setEmail('admin@gmail.com')
-                  ->setPassword('password')
+                  ->setPassword($this->encoder->encodePassword($adherent, 'password'))
                   ->setPhone($this->faker->phoneNumber())
                   ->setCodeCommune($commune[mt_rand(0, count($commune)-1)]);
          $this->entity->persist($adherent);
          $this->entity->flush();
+    }
 
+    /**
+     * Génération des prêts
+     *
+     * @return void
+     */
+    public function loadPret()
+    {
       for ($i=0; $i < 25; $i++) { 
          $pret = new Pret();
          $pret->setDatePret($this->faker->dateTimeBetween('-3 months', 'now'));
@@ -64,7 +85,7 @@ class AppFixtures extends Fixture
             };
             $pret->setDateRetourPrevue($date)
                   ->setLivre($this->entity->getRepository(Livre::class)->find(rand(1,49)))
-                  ->setAdherent($this->entity->getRepository(Adherent::class)->find(rand(1,25)));
+                  ->setAdherent($this->entity->getRepository(Adherent::class)->find(rand(242,266)));
          $this->entity->persist($pret);
        };
 
