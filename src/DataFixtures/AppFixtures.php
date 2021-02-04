@@ -24,19 +24,7 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        // $product = new Product();
-        // $manager->persist($product);
 
-        $manager->flush();
-    }
-
-    /**
-     * Génération des adhérents
-     *
-     * @return void
-     */
-    public function loadAdherent()
-    {
        $genre = ['male', 'female'];
        $commune = [
          "78003", "78005", "78006", "78007", "78009", "78010", "78013", "78015", "78020", "78029",
@@ -48,7 +36,7 @@ class AppFixtures extends Fixture
          $adherent = new Adherent();
          $adherent->setNom($this->faker->lastName())
                   ->setPrenom($this->faker->firstName($genre[mt_rand(0,1)]))
-                  ->setAdresse($this->faker->streetAdress())
+                  ->setAdresse($this->faker->streetAddress())
                   ->setEmail(strtolower($adherent->getNom()).'@gmail.com')
                   ->setPassword($adherent->getNom())
                   ->setPhone($this->faker->phoneNumber())
@@ -65,15 +53,7 @@ class AppFixtures extends Fixture
                   ->setCodeCommune($commune[mt_rand(0, count($commune)-1)]);
          $this->entity->persist($adherent);
          $this->entity->flush();
-    }
 
-    /**
-     * Génération des prêts
-     *
-     * @return void
-     */
-    public function loadPret()
-    {
       for ($i=0; $i < 25; $i++) { 
          $pret = new Pret();
          $pret->setDatePret($this->faker->dateTimeBetween('-3 months', 'now'));
