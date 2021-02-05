@@ -24,7 +24,7 @@ class Editeur
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_role_adherent", "put_manager_livre"})
+     * @Groups({"get_role_adherent", "put_manager"})
      */
     private $nom;
 

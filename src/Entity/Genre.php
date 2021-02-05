@@ -43,7 +43,7 @@ class Genre
      *      minMessage = "Le nom doit contenir plus de {{ limit }} caractères",
      *      maxMessage = "Le nom doit contenir moins de {{ limit }} caractères"
      * )
-     * @Groups({"get_role_adherent", "put_manager_livre"})
+     * @Groups({"get_role_adherent", "put_manager"})
      */
     private $libelle;
 
