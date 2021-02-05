@@ -18,8 +18,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  * @ApiResource(
  *    attributes={
  *       "order"={
- *          "titre":"ASC",
- *          "prix":"DESC"
+ *          "titre":"ASC"
  *           }
  *       }
  *   )
@@ -27,7 +26,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *    SearchFilter::class,
  *    properties={
  *       "titre":"ipartial",
- *       "auteur":"exact"
+ *       "auteur":"exact",
+ *       "genres":"exact"
  *    }
  * )
  *  @ApiFilter(
