@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\LivreRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
@@ -20,7 +21,65 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *       "order"={
  *          "titre":"ASC"
  *           }
+ * },
+ *    collectionOperations={
+ *          "get_coll_role_adherent"={
+ *             "method"="GET",
+ *             "path"="/livres",
+ *             "normalization_context"={
+ *                "groups"={"get_role_adherent"}
+ *                }
+ *             },
+ * 
+ *          "post"={
+ *             "method"="POST",
+ *             "path"="/manager/livres",
+ *             "access_control"="is_granted('ROLE_MANAGER')",
+ *             "access_control_message"="Vous n'avez pas les droits"
+ *             },
+ *       },
+ * 
+ *        itemOperations={
+ *          "get_item_role_adherent"={
+ *             "method"="GET",
+ *             "path"="/adherent/livres/{id}",
+ *             "normalization_context"={
+ *                "groups"={"get_role_adherent"}
+ *                }
+ *             },
+ * 
+ *         "get_item_role_manager"={
+ *             "method"="GET",
+ *             "path"="/manager/livres/{id}",
+ *             "access_control"="is_granted('ROLE_MANAGER')",
+ *             "access_control_message"="Vous n'avez pas les droits"
+ *             },
+ * 
+ *          "put_item_role_manager"={
+ *             "method"="PUT",
+ *             "path"="/manager/livres/{id}",
+ *             "access_control"="is_granted('ROLE_MANAGER')",
+ *             "access_control_message"="Vous n'avez pas les droits",
+ *             "denormalization_context"={
+ *                "groups"={"put_manager_livre"}
+ *               }
+ *          },
+ * 
+ *          "put_item_role_admin"={
+ *             "method"="PUT",
+ *             "path"="/admin/livres/{id}",
+ *             "access_control"="is_granted('ROLE_ADMIN')",
+ *             "access_control_message"="Vous n'avez pas les droits"
+ *             },
+ * 
+ *          "delete_item_role_admin"={
+ *             "method"="DELETE",
+ *             "path"="/admin/livres/{id}",
+ *             "access_control"="is_granted('ROLE_ADMIN')",
+ *             "access_control_message"="Vous n'avez pas les droits"
+ *             }
  *       }
+ * 
  *   )
  * @ApiFilter(
  *    SearchFilter::class,
@@ -30,11 +89,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *       "genres":"exact"
  *    }
  * )
- *  @ApiFilter(
- *    RangeFilter::class,
- *    properties={
- *       "prix"
- *    }
  * )
  *  @ApiFilter(
  *    OrderFilter::class,
@@ -67,44 +121,52 @@ class Livre
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_role_adherent", "put_manager_livre"})
      */
     private $isbn;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_role_adherent", "put_manager_livre"})
      */
     private $titre;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"get_role_manager"})
      */
     private $prix;
 
     /**
      * @ORM\ManyToOne(targetEntity=Genre::class, inversedBy="livres")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_role_adherent", "put_manager_livre"})
      */
     private $genre;
 
     /**
      * @ORM\ManyToOne(targetEntity=Editeur::class, inversedBy="livres")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_role_adherent", "put_manager_livre"})
      */
     private $editeur;
 
     /**
      * @ORM\ManyToOne(targetEntity=Auteur::class, inversedBy="livres")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_role_adherent", "put_manager_livre"})
      */
     private $auteur;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"get_role_adherent", "put_manager_livre"})
      */
     private $annee;
 
     /**
      * @ORM\OneToMany(targetEntity=Pret::class, mappedBy="livre")
+     * @Groups({"get_role_manager"})
      */
     private $prets;
 
