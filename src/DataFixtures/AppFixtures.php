@@ -27,7 +27,7 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-         $this->loadAdherent();
+         // $this->loadAdherent();
          $this->loadPret();
     }
 
@@ -53,14 +53,26 @@ class AppFixtures extends Fixture
                   ->setEmail(strtolower($adherent->getNom()).$i.'@gmail.com')
                   ->setPassword($this->encoder->encodePassword($adherent, $adherent->getNom()))
                   ->setPhone($this->faker->phoneNumber())
+                  ->setRoles([ADHERENT::ROLE_ADHERENT])
                   ->setCodeCommune($commune[mt_rand(0, count($commune)-1)]);
          $this->entity->persist($adherent);
        };
+
+                  $adherent->setNom("Billy")
+                  ->setPrenom("Bob")
+                  ->setAdresse("12 rue champs")
+                  ->setEmail('manager@gmail.com')
+                  ->setRoles([ADHERENT::ROLE_MANAGER])
+                  ->setPassword($this->encoder->encodePassword($adherent, 'password'))
+                  ->setPhone($this->faker->phoneNumber())
+                  ->setCodeCommune($commune[mt_rand(0, count($commune)-1)]);
+         $this->entity->persist($adherent);
 
        $adherent->setNom("Lima")
                   ->setPrenom("Cedric")
                   ->setAdresse("rue lilas")
                   ->setEmail('admin@gmail.com')
+                  ->setRoles([ADHERENT::ROLE_ADMIN])
                   ->setPassword($this->encoder->encodePassword($adherent, 'password'))
                   ->setPhone($this->faker->phoneNumber())
                   ->setCodeCommune($commune[mt_rand(0, count($commune)-1)]);
@@ -85,7 +97,7 @@ class AppFixtures extends Fixture
             };
             $pret->setDateRetourPrevue($date)
                   ->setLivre($this->entity->getRepository(Livre::class)->find(rand(1,49)))
-                  ->setAdherent($this->entity->getRepository(Adherent::class)->find(rand(242,266)));
+                  ->setAdherent($this->entity->getRepository(Adherent::class)->find(rand(458,482)));
          $this->entity->persist($pret);
        };
 

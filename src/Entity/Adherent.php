@@ -2,19 +2,24 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AdherentRepository;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=AdherentRepository::class)
  * @ApiResource()
- */ 
+ */
 class Adherent implements UserInterface
 {
+   const ROLE_ADMIN = 'ROLE_ADMIN';
+   const ROLE_MANAGER = 'ROLE_MANAGER';
+   const ROLE_ADHERENT = 'ROLE_ADHERENT';
+   const DEFAULT_ROLE = 'ROLE_ADHERENT';
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -76,15 +81,13 @@ class Adherent implements UserInterface
      */
     public function getRoles(){
       $roles = $this->roles;
-      // guarantee every user at least has ROLE_USER
-      $roles[] = 'ROLE_USER';
 
       return array_unique($roles);
     }
 
     public function setRoles(array $roles): self
     {
-        $this->roles = ['ROLE_USER'];
+        $this->roles = $roles;
 
         return $this;
     }
@@ -97,14 +100,18 @@ class Adherent implements UserInterface
      *
      * @return string|null The salt
      */
-    public function getSalt(){}
+    public function getSalt()
+    {
+       return null;
+    }
 
     /**
      * Returns the username used to authenticate the user.
      *
      * @return string The username
      */
-    public function getUsername(){
+    public function getUsername()
+    {
        return $this->getEmail();
     }
 
@@ -114,12 +121,16 @@ class Adherent implements UserInterface
      * This is important if, at any given point, sensitive information like
      * the plain-text password is stored on this object.
      */
-    public function eraseCredentials(){}
+    public function eraseCredentials()
+    {
+
+    }
 
 
     public function __construct()
     {
         $this->prets = new ArrayCollection();
+        $this->roles = self::DEFAULT_ROLE;
     }
 
     public function getId(): ?int
