@@ -2,13 +2,47 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PretRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PretRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ * itemOperations={
+ *      "get"={
+ *       "method"="GET",
+ *       "path"="/pret/{id}",
+ *       "access_control"="(is_granted('ROLE_ADHERENT') and object.getAdherent() == user) or is_granted('ROLE_MANAGER')",
+ *       "access_control_message"="Accès refusé"
+ *    },
+ * "delete"={
+ *       "method"="DELETE",
+ *       "path"="/pret/{id}",
+ *       "access_control"="(is_granted('ROLE_ADHERENT') and object.getAdherent() == user) or is_granted('ROLE_MANAGER')",
+ *       "access_control_message"="Accès refusé"
+ *    },
+ *  "put"={
+ *       "method"="PUT",
+ *       "path"="/pret/{id}",
+ *       "denormalization_context"={
+ *                "groups"={"put_manager"}
+ *               },
+ *       "access_control"="(is_granted('ROLE_MANAGER')",
+ *       "access_control_message"="Accès refusé"
+ *    },
+ * },
+ *    collectionOperations={
+ *          "get"={
+ *             "method"="GET",
+ *             "path"="/prets",
+ *       "access_control"="is_granted('ROLE_MANAGER')",
+ *       "access_control_message"="Accès refusé"
+ *             }
+ *       },
+ )
  */
 class Pret
 {
@@ -31,6 +65,7 @@ class Pret
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups("put_manager")
      */
     private $dateRetour;
 
@@ -45,6 +80,14 @@ class Pret
      * @ORM\JoinColumn(nullable=false)
      */
     private $adherent;
+
+    public function __construct()
+    {
+      $this->datePret = new \DateTime();
+      $timestamp = date('Y-m-d H:m:s', strtotime("15 days",$this->getDatePret()->getTimestamp()));
+      $this->dateRetourPrevue = DateTime::createFromFormat('Y-m-d H:i:s', $timestamp);
+      $this->dateRetour = null;
+    }
 
     public function getId(): ?int
     {
